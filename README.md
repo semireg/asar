@@ -6,6 +6,10 @@
 Asar is a simple extensive archive format, it works like `tar` that concatenates
 all files together without compression, while having random access support.
 
+## Fork
+
+This is a forked version by Semireg.
+
 ## Features
 
 * Support random access
