@@ -159,7 +159,20 @@ export async function createPackageFromFiles(
     ) {
       let shouldUnpack = false;
       if (unpack) {
-        shouldUnpack = minimatch(filename, unpack, { matchBase: true });
+        try {
+          if (unpack.startsWith('{') && unpack.endsWith('}')) {
+            const singleFiles = unpack.slice(1, -1).split(',');
+            shouldUnpack = singleFiles.some((pattern) => {
+              return minimatch(filename, pattern, { matchBase: true });
+            });
+          } else {
+            shouldUnpack = minimatch(filename, unpack, { matchBase: true });
+          }
+        } catch (miniMatchError: any) {
+          throw new Error(
+            `Error matching unpack pattern "${unpack}" for file "${filename}": ${miniMatchError.message}`,
+          );
+        }
       }
       if (!shouldUnpack && unpackDir) {
         shouldUnpack = isUnpackedDir(relativePath, unpackDir, unpackDirs);
